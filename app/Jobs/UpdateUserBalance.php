@@ -68,8 +68,8 @@ class UpdateUserBalance implements ShouldQueue, ShouldBeUnique
         DB::transaction(function () {
             // 使用悲观锁保证数据一致性
             $user = User::where('id', $this->user->id)
-                ->lockForUpdate()
-                ->first();
+                    ->lockForUpdate()
+                    ->first();
 
             $user->balance += $this->amount;
             $user->save();
