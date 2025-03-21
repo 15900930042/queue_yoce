@@ -64,14 +64,15 @@ class UpdateUserBalance implements ShouldQueue, ShouldBeUnique
 //        } catch (LockTimeoutException $exception) {
 //            $this->release(10);
 //        }
-        // 直接使用事务处理更新余额
+        // 直接使用事务处理更新余额,使用悲观锁保证数据一致性
         DB::transaction(function () {
-            // 使用悲观锁保证数据一致性
+            
             $user = User::where('id', $this->user->id)
                     ->lockForUpdate()
                     ->first();
-
+            
             $user->balance += $this->amount;
+            
             $user->save();
         });
     }
